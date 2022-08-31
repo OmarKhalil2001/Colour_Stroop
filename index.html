@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<HTML>
+
+<HEAD>
+    <meta name="viewport" content="width = device-width, initial-scale = 1.0">
+    <TITLE> Colour Stroop</TITLE>
+    <link rel="stylesheet" href="style.css">
+    <script src="jquery-3.5.1.js"></script>
+</HEAD>
+
+<Body>
+    <audio src="sounds/background.mp3" id="sound1" autoplay></audio>
+    <audio src="sounds/button.mp3" id="sound2"></audio>
+    <audio src="sounds/correct.mp3" id="sound3"></audio>
+    <audio src="sounds/warning.mp3" id="sound4"></audio>
+    <div id="home">
+        <center>
+            <img src="design/logo.png" id="logo" width="95%">
+            <button id="start"><img src="design/start.png"></button>
+        </center>
+    </div>
+
+    <div id="game">
+
+        <script src="processing.min.js"></script>
+        <script>
+            var wide = (window.innerWidth * 0.625) - 10;
+            var rate = 1;
+            var rate2 = 1;
+            var wide2 = (window.innerWidth * 0.5) - 10;
+            var startGame = "off";
+            var startButton = document.querySelector("#start");
+            var home = document.querySelector("#home");
+            var game = document.querySelector("#game");
+            var loseGame = "off";
+            var falseAns = "off";
+            var ranks = ["Beginner","Rookie", "Smart", "Gifted", "Wizard", "Machine"];
+
+        </script>
+        <script type="application/processing">
+            size(window.innerWidth * 0.625, 15); 
+				frameRate(60);	
+                document.querySelector("#sound1").play();
+                draw = function() {
+                    background(47,92,115);
+                    fill(255, 255, 255);
+                    rect(2,2, width-4, height-4, 7);
+                    fill(223,134,0);
+                    noStroke();
+                    rect(5 , 5, wide, height -10, 7);
+                    if(startGame == "on"){wide -= width * (rate/(600))};
+                    if(wide < 2){wide = 2;}
+                    document.querySelector("#comcon").textContent = combo+"x";
+                    if(startGame == "on" && wide == 2){
+                        loseGame = "on";
+                        useKey();
+                        if(falseAns == "off"){document.querySelector("#correctAns").textContent = "You are out of time"}
+                        }
+                        
+                    if( wide2 == 2 ){
+                        document.querySelector("#sound1").play();
+                        game.style.display = "none";
+                        finale.style.display = "block";
+                        document.querySelector("#show").textContent = score;
+                         if(score > best){
+                            best = score;
+                            localStorage.setItem("best", best); }
+                        document.querySelector("#best").textContent = "Best: " + best;
+                        startGame = "off";
+                        rate = 1;
+                        loseGame = "off";
+                        falseAns = "off";
+                        document.querySelector("#bestactual").innerHTML = "&#128081;: " + best;
+                        document.querySelector("#keyActual").innerHTML = "&#128273;: " + keys;
+                        document.querySelector("#rankactual").innerHTML = "&#128304;: " + ranks[levelStored];
+                        wide2 = (window.innerWidth * 0.5) - 10;                       
+                    }
+                };
+            </script>
+
+        <canvas id="counter"></canvas>
+        <div id="scoreDiv">
+            <p style="margin: 3px; font-size: smaller;">SCORE:</p>
+            <p id="score">0</p>
+        </div>
+        <p id="question">PINK</p>
+        <Button class="choice" id="one" style="top: 45%;left: 13%;"></Button>
+        <Button class="choice" id="two" style="top: 45%; right: 13%;"></Button>
+        <Button class="choice" id="zre" style="top: 67%;right: 13%;"></Button>
+        <Button class="choice" id="for" style="top: 67%;left: 13%;"></Button>
+
+        <div id="save">
+            <script type="application/processing">
+                size(window.innerWidth * 0.5, 15); 
+				frameRate(60);	
+
+                draw = function() {
+                    background(255,255,255);
+                    fill(255, 255, 255);
+                    rect(2,2, width-4, height-4, 7);
+                    fill(223,134,0);
+                    noStroke();
+                    rect(5 , 5, wide2, height -10, 7);
+                   if(loseGame == "on"){wide2 -= width * (rate2/(600));}
+                    if(wide2 < 2){wide2 = 2;}};
+            </script>
+            <canvas id="counter2"></canvas>
+            <p id="keys">0</p>
+            <p id="correctAns"> That was:</p>
+            <div id="block"></div>
+            <button id="useKey">Use A Key</button>
+            <button id="NoKey">No, I Won't</button>
+        </div>
+        <div id="ComboH">
+            <p id="comcon">0x</p>
+        </div>
+        <div id="cover2">
+            <p id="levelText">Level Up</p>
+        </div>
+        <div id="celeb">
+            <p class="celebText" id="c1">&#9757;</p>
+            <p class="celebText" id="c2">&#9757;</p>
+            <p class="celebText" id="c3">&#9757;</p>
+            <p class="celebText" id="c4">&#9757;</p>
+            <p class="celebText" id="c5">&#9757;</p>
+        </div>
+
+    </div>
+
+    <div id="finale">
+        <div id="s7s">
+            <p id="bestactual">&#128081;: 0</p>
+            <p id="keyActual">&#128273;: 0</p>
+            <p id="rankactual">&#128304;: 0</p>
+            
+        </div>
+        <div id="layer1">
+            <div id="layer2">
+                <p id="hed">You Scored:</p>
+                <p id="show">0</p>
+                <hr id="line1">
+                <p id="best">BEST: 0</p>
+            </div>
+        </div>
+        <button id="restart"><img src="design/restart.png"></button>
+    </div>
+    <script>
+        $("body").fadeIn(800);
+        document.querySelector("#sound1").loop = true;
+        if (window.innerWidth / window.innerHeight < 0.5) {
+            document.querySelector("#logo").style.paddingTop = "10%";
+        }
+        if (window.innerWidth < 375) {
+            for (var i = 0; i < 4; i++) {
+                document.querySelectorAll("button.choice")[i].style.width = "110px";
+                document.querySelectorAll("button.choice")[i].style.height = "110px";
+            }
+        }
+        if (window.innerWidth > 500) {
+            for (var i = 0; i < 4; i++) {
+                document.querySelectorAll("button.choice")[i].style.width = "160px";
+                document.querySelectorAll("button.choice")[i].style.height = "160px";
+            }
+        }
+
+        var finale = document.querySelector("#finale");
+        var restartButton = document.querySelector("#restart");
+        var choices = document.querySelectorAll("button.choice");
+        var score = 0;
+        var combo = 0;
+        var colors = ["white", "black", "wheat", "aqua", "beige", "blue", "brown", "crimson", "cyan", "grey", "red", "green", "gold", "indigo", "lime", "navy", "olive", "orange", "yellow", "teal"];
+
+        var n1 = Math.floor(Math.random() * colors.length);
+        var n2 = Math.floor(Math.random() * (colors.length - 1));
+        var n3 = Math.floor(Math.random() * (colors.length - 2));
+        var n4 = Math.floor(Math.random() * (colors.length - 3));
+
+        var color1 = colors[n1];
+        var color2 = colors[n2];
+        var color3 = colors[n3];
+        var color4 = colors[n4];
+
+        var colorB = [color1, color2, color3, color4];
+
+        var n5 = Math.floor(Math.random() * colorB.length);
+        var n6 = Math.floor(Math.random() * (colorB.length));
+        var n7 = Math.floor(Math.random() * (colorB.length));
+        var n8 = Math.floor(Math.random() * (colorB.length));
+        
+        var questionA = 0;
+        var levelStored;
+
+        var best;
+        var keys;
+        var keyDown = "on";
+
+        if (localStorage.getItem("level") == "NaN" || localStorage.getItem("level") == NaN || localStorage.getItem("level") == null) {
+            levelStored = 0;
+        } else {
+            levelStored = parseInt(localStorage.getItem("level"));
+        }
+        
+        if (localStorage.getItem("best") == "NaN" || localStorage.getItem("best") == NaN || localStorage.getItem("best") == null) {
+            best = 0;
+        } else {
+            best = parseInt(localStorage.getItem("best"));
+        }
+
+        if (localStorage.getItem("keys") == "NaN" || localStorage.getItem("keys") == NaN || localStorage.getItem("keys") == null) {
+            keys = 3;
+        } else {
+            keys = parseInt(localStorage.getItem("keys"));
+
+            document.querySelector("#keys").textContent = keys;
+        }
+        function celebrate(level){
+            var levels = ["Beginner","Rookie", "Star", "Gifted", "Wizard", "Machine"];
+            var emojis = ["","&#127775;", "&#128175;","&#129504;", "&#129497;", "&#128126;"];
+            
+            if( level == 1 || level == 2 || level == 3 || level == 4 || level == 5){
+                for(var h = 0; h < 5; h++){document.querySelectorAll("p.celebText")[h].innerHTML = emojis[level];}
+                $("#levelText").html("Level Up");
+                startGame = "off";
+                $("#cover2").fadeIn(200);
+                $("#levelText").delay(1000).fadeOut(400).delay(100).fadeIn(400);
+                $("#c1").animate({bottom : "125%"}, 1600);
+                $("#c2").animate({bottom : "125%"}, 1300);
+                $("#c3").animate({bottom : "125%"}, 1700);
+                $("#c4").animate({bottom : "125%"}, 1500);
+                $("#c5").animate({bottom : "125%"}, 1650);
+
+                setTimeout(()=>{ $("#levelText").html("You are now a " + levels[level]);}, 1450)
+                rate = rate * 1.5;
+                setTimeout(()=>{
+                    $("#cover2").fadeOut(200);
+                    $("#c1").animate({bottom : "-25%"}, 1);
+                    $("#c2").animate({bottom : "-25%"}, 1);
+                    $("#c3").animate({bottom : "-25%"}, 1);
+                    $("#c4").animate({bottom : "-25%"}, 1);
+                    $("#c5").animate({bottom : "-25%"}, 1);
+                }, 3000)
+                
+                setTimeout(()=>{
+                    gameplay();
+                    startGame = "on";
+                }, 3200)
+               if(level > levelStored){localStorage.setItem("level", level); levelStored = level;} 
+            }
+        }
+
+        function useKey() {
+
+            document.querySelector("#save").style.display = "block";
+            document.querySelector("#sound1").pause();
+            document.querySelector("#sound4").play();
+            document.querySelector("#sound4").loop = false;
+
+            document.querySelector("#useKey").addEventListener("click", () => {
+                if (keys > 0 && keyDown == "on") {
+                    keyDown = "off";
+                    keys = keys - 1;
+                    gameplay();
+                    wide2 = (window.innerWidth * 0.5) - 10;
+                    wide = (window.innerWidth * 0.625) - 10;
+                    localStorage.setItem("keys", keys);
+                    document.querySelector("#save").style.display = "none";
+                    document.querySelector("#keys").textContent = keys;
+                    loseGame = "off";
+                    document.querySelector("#correctAns").textContent = "You are out of time";
+                    document.querySelector("#sound1").play();
+                }
+            });
+        }
+
+        function gameplay() {
+            colors = ["white", "black", "wheat", "fuchsia", "beige", "blue", "brown", "crimson", "cyan", "grey", "red", "green", "gold", "indigo", "lime", "navy", "olive", "orange", "yellow", "teal"];
+            n1 = Math.floor(Math.random() * colors.length);
+            n2 = Math.floor(Math.random() * (colors.length - 1));
+            n3 = Math.floor(Math.random() * (colors.length - 2));
+            n4 = Math.floor(Math.random() * (colors.length - 3));
+
+            color1 = colors[n1];
+            colors.splice(n1, 1);
+
+            color2 = colors[n2];
+            colors.splice(n2, 1);
+
+            color3 = colors[n3];
+            colors.splice(n3, 1);
+
+            color4 = colors[n4];
+            colors.splice(n4, 1);
+
+            colors = ["white", "black", "wheat", "beige", "blue", "brown", "crimson", "cyan", "grey", "turquoise", "red", "green", "gold", "indigo", "lime", "navy", "olive", "orange", "yellow", "pink", "teal"];
+
+            document.querySelector("#question").textContent = color1.toUpperCase();
+            document.querySelector("#question").style.color = color2;
+
+            colorB = [color1, color2, color3, color4];
+
+            n5 = Math.floor(Math.random() * colorB.length);
+            choices[0].style.background = colorB[n5];
+            colorB.splice(n5, 1);
+
+            n6 = Math.floor(Math.random() * (colorB.length));
+            choices[1].style.background = colorB[n6];
+            colorB.splice(n6, 1);
+
+
+            n7 = Math.floor(Math.random() * (colorB.length));
+            choices[2].style.background = colorB[n7];
+            colorB.splice(n7, 1);
+
+
+            n8 = Math.floor(Math.random() * (colorB.length));
+            choices[3].style.background = colorB[n8];
+            colorB.splice(n8, 1);
+
+
+            if (choices[0].style.background == color1) {
+                choices[1].id = "";
+                choices[2].id = "";
+                choices[3].id = "";
+                choices[0].id = "true";
+            }
+            if (choices[1].style.background == color1) {
+                choices[0].id = "";
+                choices[1].id = "true";
+                choices[2].id = "";
+                choices[3].id = "";
+            }
+            if (choices[2].style.background == color1) {
+                choices[0].id = "";
+                choices[1].id = "";
+                choices[2].id = "true";
+                choices[3].id = "";
+            }
+            if (choices[3].style.background == color1) {
+                choices[0].id = "";
+                choices[1].id = "";
+                choices[2].id = "";
+                choices[3].id = "true";
+            }
+        }
+
+        startButton.addEventListener("click", () => {
+            document.querySelector("#sound2").play();
+            if (startGame == "off") {
+                document.querySelector("#sound1").pause();
+                setTimeout(()=>{
+                document.querySelector("#sound1").play();
+                $("#start").animate({
+                    bottom: "-100%"
+                }, 600).fadeOut(600);
+                $("#logo").animate({
+                    top: "-100%"
+                }, 600).fadeOut(600);
+                wide = (window.innerWidth * 0.625) - 10;
+                startGame = "on";
+                $(game).delay(300).fadeIn(600);
+                gameplay();}, 200);
+            }
+        });
+
+        restartButton.addEventListener("click", () => {
+            document.querySelector("#sound1").play();
+            document.querySelector("#sound2").play();
+            keys += Math.floor(score / 25);
+            document.querySelector("#keys").textContent = keys;
+            localStorage.setItem("keys", keys);
+            $(finale).fadeOut(200);
+            wide = (window.innerWidth * 0.625) - 10;
+            $(game).delay(200).fadeIn(200);
+            gameplay();
+            score = 0;
+            questionA = 0;
+            document.querySelector("#score").textContent = score;
+            rate = 1;
+            startGame = "on";
+            document.querySelector("#save").style.display = "none";
+        });
+
+        document.querySelector("#NoKey").addEventListener("click", () => {
+            wide2 = 2;
+        })
+
+        for (var e = 0; e < 4; e++) {
+            choices[e].addEventListener("click", () => {
+                keyDown = "on";
+                if (event.target.id == "true") {
+                    document.querySelector("#sound3").currentTime = 0;
+                    document.querySelector("#sound3").play();
+                    if (wide / ((window.innerWidth * 0.625) - 10) > 0.75) {
+                        combo += 1;
+                        document.querySelector("#comcon").style.width = "30%";
+                        document.querySelector("#comcon").style.height = "8%";
+                        document.querySelector("#comcon").style.fontSize = "10vw";
+                        $("#comcon").animate({
+                            width: "25%",
+                            height: "6%"
+                        }, 200).animate({
+                            left: "-1%"
+                        }, 600).css({
+                            fontSize: "8vw"
+                        });
+                        document.querySelector("#comcon").style.textShadow = "0px 1px 7px rgb(" + Math.random() * 255 + "," + Math.random() * 255 + "," + Math.random() * 255 + ")";
+                    } else {
+                        score += combo;
+                        combo = 0;
+                        $("#comcon").animate({
+                            left: "-30%"
+                        }, 600);
+                    }
+                    score += 1;
+                    questionA += 1;
+                    event.target.id = "";
+                    document.querySelector("#score").textContent = score;
+                    celebrate(questionA/7);
+                    gameplay();
+                    wide = (window.innerWidth * 0.625) - 10;
+                } else {
+                    wide = 2;
+                    falseAns = "on";
+                    score += combo;
+                    combo = 0;
+                    if(falseAns == "on"){document.querySelector("#correctAns").textContent = "Ops! you chose " + event.target.style.background;}
+                    $("#comcon").animate({
+                        left: "-30%"
+                    }, 600);
+                }
+            });
+        }
+
+    </script>
+</Body>
+
+</HTML>
